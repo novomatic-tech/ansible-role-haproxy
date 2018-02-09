@@ -1,0 +1,25 @@
+---
+
+- name: Allow haproxy to bind on no local address [VRRP]
+  sysctl:
+    name: net.ipv4.ip_nonlocal_bind
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Extend open descriptors
+  lineinfile:
+    path: /etc/security/limits.conf
+    regexp: "^haproxy hard nofile"
+    line: "haproxy hard nofile {{ haproxy_max_conn | int * 2 + 40 }}"
+    insertbefore: "# End of file"
+    state: present
+
+- name: Create haproxy main configuration
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    mode: 0644
+    validate: haproxy -f %s -c -q
+  notify: Restart haproxy

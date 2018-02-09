@@ -1,0 +1,38 @@
+---
+# defaults file for ansible-role-haproxy
+
+# sysctl
+
+# haproxy installation parameters
+haproxy_rpm: http://cbs.centos.org/kojifiles/packages/haproxy/1.8.1/4.el7/x86_64/haproxy18-1.8.1-4.el7.x86_64.rpm
+haproxy_user: haproxy
+haproxy_group: haproxy
+
+# haproxy main config option
+
+haproxy_max_conn: 1000000
+haproxy_nbproc_enabled: True
+haproxy_nbproc: 4
+haproxy_forwardfor: False
+haproxy_redispatch: True
+haproxy_retry: 3
+haproxy_stats_lport: 1999
+
+haproxy_ssl_enabled: False
+
+haproxy_timeouts:
+  - { type: "http-request", value: "10s"  }
+  - { type: "queue", value: "30s" }
+  - { type: "connect", value: "10s" }
+  - { type: "client", value: "30s" }
+  - { type: "server", value: "1m" }
+  - { type: "http-keep-alive", value: "10s"  }
+  - { type: "check", value: "5s" }
+
+# Stats settings
+haproxy_stats_enabled: True
+haproxy_stats_max_conn: 10
+haproxy_stats_uri: /lb_stats
+haproxy_stats_port: 2000
+haproxy_stats_user: admin
+haproxy_stats_pass: PleaseChangeIt123

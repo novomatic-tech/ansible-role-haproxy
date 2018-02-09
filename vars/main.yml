@@ -1,0 +1,55 @@
+---
+# vars file for ansible-role-haproxy
+# haproxy_services:
+#   - name: "k8s"
+#     type: frontend
+#     binds:
+#       - { host: "*", port: "80" }
+#     mode: http
+#     acls:
+#       - { name: "forward_k8s", rule: "hdr_end(host) -i k8s.example.com" }
+#     conditions:
+#       - { state: "use_backend k8s_backend", rule: "forward_k8s" }
+#     default_backend: company_site
+#   - name: "company_site"
+#     type: backend
+#     balance_type: roundrobin
+#     options:
+#       - "option forwardfor"
+#       - "http-request set-header X-Forwarded-Port %[dst_port]"
+#     endpoints:
+#       - { name: "backend_1", address: "192.168.0.1:80", options: "check" }
+#       - { name: "backend_2", address: "192.168.0.2:80", options: "check" }
+#   - name: "k8s_backend"
+#     type: backend
+#     balance_type: roundrobin
+#     options:
+#       - "option forwardfor"
+#       - "http-request set-header X-Forwarded-Port %[dst_port]"
+#     endpoints:
+#       - { name: "backend_1", address: "192.168.0.3:8080", options: "check" }
+#       - { name: "backend_2", address: "192.168.0.4:8080", options: "check" }
+
+# haproxy_services:
+#   - name: "exmaple_service"
+#     type: frontend
+#     binds:
+#       - { host: "*", port: "80" }
+#       - { host: "127.0.0.1", port: "443", priv_key: "test.pem" }
+#     mode: http
+#     acls:
+#       - { name: "test", rule: "hdr_end(host) -i example.com" }
+#     conditions:
+#       - { state: "use_backend examplebackend", rule: "test" }
+#       - { state: "redirect scheme https", rule: "!{ ssl_fc }" }
+#     default_backend: examplebackend
+#   - name: "examplebackend"
+#     type: backend
+#     balance_type: roundrobin
+#     options:
+#       - "option forwardfor"
+#       - "http-request set-header X-Forwarded-Port %[dst_port]"
+#       - "http-request add-header X-Forwarded-Proto https if { ssl_fc }"
+#     endpoints:
+#       - { name: "backend_1", address: "192.168.0.1:80", options: "check" }
+#       - { name: "backend_2", address: "192.168.0.2:80", options: "check" }

@@ -1,0 +1,34 @@
+---
+
+- name: Create HAproxy group
+  group:
+    name: "{{ haproxy_group}}"
+    system: yes
+    state: present
+
+- name: Create HAproxy service user
+  user:
+    name: "{{ haproxy_user}}"
+    comment: HAProxy service user
+    group: "{{ haproxy_group}}"
+    system: yes
+    shell: /usr/sbin/nologin
+    state: present
+
+- name: Install HAproxy Packages > 1.8
+  yum:
+    name: "{{ haproxy_rpm }}"
+    state: present
+
+- name: Set folders and change owner and rights
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0644
+    recurse: yes
+    owner: "{{ haproxy_user}}"
+    group: "{{ haproxy_group}}"
+  with_items:
+    - /etc/haproxy
+    - /etc/haproxy/errors
+    - /run/haproxy

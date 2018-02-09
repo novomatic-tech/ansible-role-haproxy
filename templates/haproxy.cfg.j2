@@ -1,0 +1,99 @@
+# {{ ansible_managed }}
+
+global
+  log 127.0.0.1 local2
+  chroot  /var/lib/haproxy
+  pidfile /var/run/haproxy.pid
+
+  maxconn {{ haproxy_max_conn }}
+{% if haproxy_nbproc_enabled %}
+  nbproc  {{ haproxy_nbproc }}
+{% for i in range(0,haproxy_nbproc) %}
+  cpu-map {{i+1}} {{i}}
+{% endfor %}
+  stats bind-process {{ haproxy_nbproc }}
+{% endif %}
+
+  stats socket /run/haproxy/admin.sock mode 660 level admin
+
+  user  {{ haproxy_user }}
+  group {{ haproxy_group }}
+  daemon
+
+{% if haproxy_ssl_enabled %}
+  ssl-default-bind-options  no-sslv3 no-tls-tickets
+  ssl-default-bind-ciphers  ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:RSA+AESGCM:RSA+AES:!aNULL:!MD5:!DSS
+{% endif %}
+
+defaults
+  mode  http
+  log   global
+  option  httplog
+  option  dontlognull
+{% if haproxy_forwardfor %}
+  option  forwardfor  except 127.0.0.0/8
+{% endif %}
+{% if haproxy_redispatch %}
+  option  redispatch
+{% endif %}
+  retries {{ haproxy_retry }}
+{% for timeout in haproxy_timeouts %}
+  timeout {{ timeout.type }}  {{ timeout.value }}
+{% endfor %}
+  maxconn {{ haproxy_max_conn }}
+
+{% if haproxy_stats_enabled %}
+# Stats endpoint
+listen stats
+  bind 0.0.0.0:{{ haproxy_stats_port }}
+  mode http
+  maxconn {{ haproxy_stats_max_conn }}
+  stats enable
+  stats hide-version
+  stats uri {{ haproxy_stats_uri }}
+  stats auth {{ haproxy_stats_user }}:{{ haproxy_stats_pass }}
+{% endif %}
+
+#
+# Endpoints
+#
+
+{% for service in haproxy_services | default([]) %}
+#{{ service.name }}
+
+{% if service.type == "frontend" %}
+frontend {{ service.name }}
+{% for bind in service.binds %}
+{% if bind.priv_key is defined %}
+  bind {{ bind.host }}:{{ bind.port }} ssl crt /etc/ssl/{{ bind.priv_key }}
+{% else %}
+  bind {{ bind.host }}:{{ bind.port }}
+{% endif %}
+{% endfor %}
+  mode {{ service.mode }}
+{% for acl in service.acls | default([]) %}
+  acl {{ acl.name }} {{ acl.rule }}
+{% endfor %}
+
+{% for condition in service.conditions | default([]) %}
+  {{ condition.state }} if {{ condition.rule }}
+{% endfor %}
+{% if service.default_backend is defined %}
+
+  default_backend {{ service.default_backend }}
+{% endif %}
+
+{% elif service.type == "backend" %}
+backend {{ service.name }}
+{% if service.balance_type is defined %}
+  balance {{ service.balance_type }}
+{% endif %}
+{% for option in service.options | default([]) %}
+  {{ option }}
+{% endfor %}
+{% for endpoint in service.endpoints | default([]) %}
+  server {{ endpoint.name }} {{ endpoint.address }} {{ endpoint.options | default() }}
+{% endfor %}
+
+{% endif %}
+{% endfor %}
