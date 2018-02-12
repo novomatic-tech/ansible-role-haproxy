@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/novomatic-tech/ansible-role-haproxy.svg?branch=master)](https://travis-ci.org/novomatic-tech/ansible-role-haproxy) [![License](https://img.shields.io/badge/license-MIT%20License-brightgreen.svg)](https://opensource.org/licenses/MIT) [![Ansible Role Name](https://img.shields.io/ansible/role/23784.svg)](https://galaxy.ansible.com/novomatic-tech/haproxy/) [![Ansible Role counter](https://img.shields.io/ansible/role/d/23784.svg)](https://galaxy.ansible.com/novomatic-tech/haproxy/) 
+
+
 Ansible-role-haproxy
 =========
 
