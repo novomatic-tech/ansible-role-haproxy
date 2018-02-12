@@ -2,6 +2,7 @@
 - hosts: localhost
   remote_user: root
   vars:
+    retry_files_enabled: False
     haproxy_services:
       - name: "k8s"
         type: frontend
