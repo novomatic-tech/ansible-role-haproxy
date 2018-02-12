@@ -7,3 +7,4 @@
     state: "restarted"
     enabled: "yes"
   retries: 3
+  when: not ansible_check_mode
