@@ -20,6 +20,7 @@ haproxy_stats_lport: 1999
 
 haproxy_ssl_enabled: False
 
+haproxy_accesslog_json: True
 haproxy_timeouts:
   - { type: "http-request", value: "10s"  }
   - { type: "queue", value: "30s" }

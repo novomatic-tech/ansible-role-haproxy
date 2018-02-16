@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 
 global
-  log 127.0.0.1 local2
+  log /dev/log local0
   chroot  /var/lib/haproxy
   pidfile /var/run/haproxy.pid
 
@@ -30,6 +30,9 @@ defaults
   log   global
   option  httplog
   option  dontlognull
+{% if haproxy_accesslog_json %}
+  log-format {"type":"haproxy","timestamp":%Ts,"http_status":%ST,"http_request":"%r","remote_addr":"%ci","bytes_read":%B,"upstream_addr":"%si","backend_name":"%b","retries":%rc,"bytes_uploaded":%U,"upstream_response_time":"%Tr","upstream_connect_time":"%Tc","session_duration":"%Tt","termination_state":"%ts"}
+{% endif %}
 {% if haproxy_forwardfor %}
   option  forwardfor  except 127.0.0.0/8
 {% endif %}
