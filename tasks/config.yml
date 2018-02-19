@@ -8,13 +8,11 @@
     state: present
     reload: yes
 
-- name: Extend open descriptors
-  lineinfile:
-    path: /etc/security/limits.conf
-    regexp: "^haproxy hard nofile"
-    line: "haproxy hard nofile {{ haproxy_max_conn | int * 2 + 40 }}"
-    insertbefore: "# End of file"
-    state: present
+- name: Custom haproxy systemd units
+  template:
+    src: haproxy.service.j2
+    dest: /usr/lib/systemd/system/haproxy.service
+    mode: 0644
 
 - name: Create haproxy main configuration
   template:

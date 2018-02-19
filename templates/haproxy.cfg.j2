@@ -1,9 +1,13 @@
 # {{ ansible_managed }}
 
 global
+{% if haproxy_chroot_enabled %}
+  log {{ haproxy_chroot_dir }}/dev/log local0
+  chroot  {{ haproxy_chroot_dir }}
+{% else %}
   log /dev/log local0
-  chroot  /var/lib/haproxy
-  pidfile /var/run/haproxy.pid
+{% endif %}
+  pidfile /run/haproxy.pid
 
   maxconn {{ haproxy_max_conn }}
 {% if haproxy_nbproc_enabled %}

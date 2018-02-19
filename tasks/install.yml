@@ -32,3 +32,12 @@
     - /etc/haproxy
     - /etc/haproxy/errors
     - /run/haproxy
+
+- name: Bind journal log socket to chroot env
+  mount:
+    path: "{{ haproxy_chroot_dir }}/dev/log"
+    src: "/dev/log"
+    fstype: none
+    state: mounted
+    opts: bind
+  when: haproxy_chroot_enabled
