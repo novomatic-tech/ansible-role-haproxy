@@ -9,7 +9,7 @@ haproxy_user: haproxy
 haproxy_group: haproxy
 
 # haproxy main config option
-haproxy_chroot_enabled: True
+haproxy_chroot_enabled: False
 haproxy_chroot_dir: /var/lib/haproxy
 haproxy_max_conn: 30000
 haproxy_nbproc_enabled: True
