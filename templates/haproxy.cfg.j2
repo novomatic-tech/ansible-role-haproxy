@@ -32,7 +32,6 @@ global
 defaults
   mode  http
   log   global
-  option  httplog
   option  dontlognull
 {% if haproxy_accesslog_json %}
   log-format {"type":"haproxy","timestamp":%Ts,"http_status":%ST,"http_request":"%r","remote_addr":"%ci","bytes_read":%B,"upstream_addr":"%si","backend_name":"%b","retries":%rc,"bytes_uploaded":%U,"upstream_response_time":"%Tr","upstream_connect_time":"%Tc","session_duration":"%Tt","termination_state":"%ts"}

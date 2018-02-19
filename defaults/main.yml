@@ -11,7 +11,7 @@ haproxy_group: haproxy
 # haproxy main config option
 haproxy_chroot_enabled: True
 haproxy_chroot_dir: /var/lib/haproxy
-haproxy_max_conn: 1000000
+haproxy_max_conn: 30000
 haproxy_nbproc_enabled: True
 haproxy_nbproc: 4
 haproxy_forwardfor: False
