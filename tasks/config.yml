@@ -11,9 +11,9 @@
 - name: Custom haproxy systemd units
   template:
     src: haproxy.service.j2
-    dest: /usr/lib/systemd/system/haproxy.service
+    dest: /etc/systemd/system/haproxy.service
     mode: 0644
-
+    
 - name: Create haproxy main configuration
   template:
     src: haproxy.cfg.j2
