@@ -8,9 +8,9 @@
 
 - name: Create HAproxy service user
   user:
-    name: "{{ haproxy_user}}"
+    name: "{{ haproxy_user }}"
     comment: HAProxy service user
-    group: "{{ haproxy_group}}"
+    group: "{{ haproxy_group }}"
     system: yes
     shell: /usr/sbin/nologin
     state: present
@@ -25,9 +25,8 @@
     path: "{{ item }}"
     state: directory
     mode: 0644
-    recurse: yes
-    owner: "{{ haproxy_user}}"
-    group: "{{ haproxy_group}}"
+    owner: "{{ haproxy_user }}"
+    group: "{{ haproxy_group }}"
   with_items:
     - /etc/haproxy
     - /etc/haproxy/errors
