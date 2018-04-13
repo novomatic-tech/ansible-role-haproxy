@@ -1,3 +1,4 @@
+haproxy_stats_pass: correcthorsebatterystaple
 haproxy_services:
   - name: "k8s"
     type: frontend
