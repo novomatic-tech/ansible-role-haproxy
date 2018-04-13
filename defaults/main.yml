@@ -17,7 +17,6 @@ haproxy_nbproc: "{{ ansible_processor_vcpus }}"
 haproxy_forwardfor: False
 haproxy_redispatch: True
 haproxy_retry: 3
-haproxy_stats_lport: 1999
 
 haproxy_ssl_enabled: False
 
