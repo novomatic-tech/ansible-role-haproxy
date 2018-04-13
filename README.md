@@ -11,7 +11,7 @@ Installs HAProxy on RedHat/CentOS server.
 Requirements
 ------------
 
-This role use custom community package of HAProxy 1.8.4, url is define in defaults variable files.
+This role use custom community package of HAProxy 1.8.1-4, url is define in defaults variable files.
 
 Role Variables
 --------------
@@ -19,9 +19,9 @@ Role Variables
 All default variables are predefined in [defaults/main.yml](defaults/main.yml).
 Example playbook usage is also define in [vars/main.yml](vars/main.yml).
 
-**Note**: An attribute `haproxy_nbproc: 4` should be equal to the number of cpu on haproxy machines.  
+**Note**: An attribute `haproxy_nbproc` should be equal or lower than the number of cpu on haproxy machines.  
 
-**Note**: A variable `haproxy_stats_pass:` should be change before you use this role.
+**Note**: A variable `haproxy_stats_pass:` have to be change before you use this role.
 
 Example Playbook
 ----------------
