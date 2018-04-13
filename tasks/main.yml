@@ -1,6 +1,11 @@
 ---
 # tasks file for ansible-role-haproxy
 
+- name: Fail when user uses default password
+  fail:
+    msg: "Please change password for HAProxy statistics page. Consider changing username if needed."
+  when: haproxy_stats_pass == "PleaseChangeIt123"
+
 - include_tasks: install.yml
 
 - include_tasks: config.yml
