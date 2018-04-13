@@ -13,7 +13,7 @@ haproxy_chroot_enabled: False
 haproxy_chroot_dir: /var/lib/haproxy
 haproxy_max_conn: 30000
 haproxy_nbproc_enabled: True
-haproxy_nbproc: 4
+haproxy_nbproc: "{{ ansible_processor_vcpus }}"
 haproxy_forwardfor: False
 haproxy_redispatch: True
 haproxy_retry: 3
