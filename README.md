@@ -23,9 +23,6 @@ Example playbook usage is also define in [vars/main.yml](vars/main.yml).
 
 **Note**: A variable `haproxy_stats_pass:` have to be change before you use this role.
 
-Limitations
------------
- * listen section support only tcp mode.
 
 Example Playbook
 ----------------

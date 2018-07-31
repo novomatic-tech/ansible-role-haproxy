@@ -70,15 +70,15 @@ listen stats
 {% if service.type == "listen" %}
 listen {{ service.name }}
 {% for bind in service.binds %}
-  bind {{ bind.host }}:{{ bind.port }}
-{% endfor %}
-  mode tcp
-{% if service.balance_type is defined %}
-  balance {{ service.balance_type }}
+{% if ( bind.priv_key is defined and haproxy_default_listen_mode == 'http' ) %}
+  bind {{ bind.host }}:{{ bind.port }} ssl crt /etc/ssl/{{ bind.priv_key }}
 {% else %}
-  balance source
+  bind {{ bind.host }}:{{ bind.port }}
 {% endif %}
-{% if haproxy_accesslog_json %}
+{% endfor %}
+  mode {{ service.mode | default(haproxy_default_listen_mode) }}
+  balance {{ service.balance_type | default (haproxy_default_listen_balance)}}
+{% if ( haproxy_accesslog_json and haproxy_default_listen_mode == 'tcp' ) %}
   log-format {"type":"haproxy","timestamp":%Ts,"http_status":%ST,"remote_addr":"%ci","bytes_read":%B,"upstream_addr":"%si","backend_name":"%b","retries":%rc,"bytes_uploaded":%U,"upstream_connect_time":"%Tc","session_duration":"%Tt","termination_state":"%ts"}
 {% endif %}
 {% for acl in service.acls | default([]) %}
@@ -87,11 +87,11 @@ listen {{ service.name }}
 {% for condition in service.conditions | default([]) %}
   {{ condition.state }} if {{ condition.rule }}
 {% endfor %}
-{% for option in service.options | default(haproxy_default_tcp_options) %}
+{% for option in service.options | default(haproxy_default_listen_options) %}
   {{ option }}
 {% endfor %}
 {% for endpoint in service.endpoints | default([]) %}
-  server {{ endpoint.name }} {{ endpoint.address }} {{ endpoint.options | default(haproxy_default_endpoint_option) }}
+  server {{ endpoint.name }} {{ endpoint.address }} {{ endpoint.options | default(haproxy_default_endpoint_options) }}
 {% endfor %}
 {% endif %}
 
@@ -104,14 +104,14 @@ frontend {{ service.name }}
   bind {{ bind.host }}:{{ bind.port }}
 {% endif %}
 {% endfor %}
-  mode {{ service.mode }}
+  mode {{ service.mode | default(haproxy_default_frontend_mode) }}
 {% for acl in service.acls | default([]) %}
   acl {{ acl.name }} {{ acl.rule }}
 {% endfor %}
 {% for condition in service.conditions | default([]) %}
   {{ condition.state }} if {{ condition.rule }}
 {% endfor %}
-{% for option in service.options | default([]) %}
+{% for option in service.options | default(haproxy_default_frontend_options) %}
   {{ option }}
 {% endfor %}
 {% if service.default_backend is defined %}
@@ -120,14 +120,12 @@ frontend {{ service.name }}
 
 {% elif service.type == "backend" %}
 backend {{ service.name }}
-{% if service.balance_type is defined %}
-  balance {{ service.balance_type }}
-{% endif %}
-{% for option in service.options | default([]) %}
+  balance {{ service.balance_type | default(haproxy_default_backend_balance) }}
+{% for option in service.options | default(haproxy_default_backend_options) %}
   {{ option }}
 {% endfor %}
 {% for endpoint in service.endpoints | default([]) %}
-  server {{ endpoint.name }} {{ endpoint.address }} {{ endpoint.options | default(haproxy_default_endpoint_option) }}
+  server {{ endpoint.name }} {{ endpoint.address }} {{ endpoint.options | default(haproxy_default_endpoint_options) }}
 {% endfor %}
 
 {% endif %}

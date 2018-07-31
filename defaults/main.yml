@@ -38,11 +38,21 @@ haproxy_stats_port: 2000
 haproxy_stats_user: admin
 haproxy_stats_pass: PleaseChangeIt123
 
-haproxy_default_tcp_options:
+haproxy_default_listen_balance: source
+haproxy_default_listen_mode: tcp
+haproxy_default_listen_options:
   - "no option clitcpka"
   - "option forceclose"
 
-haproxy_default_endpoint_option: "check inter 3s fastinter 1s"
+haproxy_default_frontend_mode: http
+haproxy_default_frontend_options:
+  - "option forwardfor"
+  - "http-request set-header X-Forwarded-Port %[dst_port]"
+  - "http-request set-header X-Forwarded-Proto https if { ssl_fc }"
+
+haproxy_default_backend_balance: roundrobin
+haproxy_default_backend_options: []
+haproxy_default_endpoint_options: "check inter 3s fastinter 1s"
 
 # Services config
 haproxy_services: []
@@ -71,18 +81,11 @@ haproxy_services: []
 #   - name: "company_site"
 #     type: backend
 #     balance_type: roundrobin
-#     options:
-#       - "option forwardfor"
-#       - "http-request set-header X-Forwarded-Port %[dst_port]"
 #     endpoints:
 #       - { name: "backend_1", address: "192.168.0.1:80", options: "check" }
 #       - { name: "backend_2", address: "192.168.0.2:80", options: "check" }
 #   - name: "k8s_backend"
 #     type: backend
-#     balance_type: roundrobin
-#     options:
-#       - "option forwardfor"
-#       - "http-request set-header X-Forwarded-Port %[dst_port]"
 #     endpoints:
 #       - { name: "backend_1", address: "192.168.0.3:8080", options: "check" }
 #       - { name: "backend_2", address: "192.168.0.4:8080", options: "check" }

@@ -23,10 +23,6 @@ haproxy_services:
     default_backend: company_site
   - name: "company_site"
     type: backend
-    balance_type: roundrobin
-    options:
-      - "option forwardfor"
-      - "http-request set-header X-Forwarded-Port %[dst_port]"
     endpoints:
       - { name: "backend_1", address: "192.168.0.1:80", options: "check" }
       - { name: "backend_2", address: "192.168.0.2:80", options: "check" }
