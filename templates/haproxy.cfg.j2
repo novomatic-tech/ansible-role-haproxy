@@ -67,6 +67,34 @@ listen stats
 {% for service in haproxy_services | default([]) %}
 #{{ service.name }}
 
+{% if service.type == "listen" %}
+listen {{ service.name }}
+{% for bind in service.binds %}
+  bind {{ bind.host }}:{{ bind.port }}
+{% endfor %}
+  mode tcp
+{% if service.balance_type is defined %}
+  balance {{ service.balance_type }}
+{% else %}
+  balance source
+{% endif %}
+{% if haproxy_accesslog_json %}
+  log-format {"type":"haproxy","timestamp":%Ts,"http_status":%ST,"remote_addr":"%ci","bytes_read":%B,"upstream_addr":"%si","backend_name":"%b","retries":%rc,"bytes_uploaded":%U,"upstream_connect_time":"%Tc","session_duration":"%Tt","termination_state":"%ts"}
+{% endif %}
+{% for acl in service.acls | default([]) %}
+  acl {{ acl.name }} {{ acl.rule }}
+{% endfor %}
+{% for condition in service.conditions | default([]) %}
+  {{ condition.state }} if {{ condition.rule }}
+{% endfor %}
+{% for option in service.options | default(haproxy_default_tcp_options) %}
+  {{ option }}
+{% endfor %}
+{% for endpoint in service.endpoints | default([]) %}
+  server {{ endpoint.name }} {{ endpoint.address }} {{ endpoint.options | default(haproxy_default_endpoint_option) }}
+{% endfor %}
+{% endif %}
+
 {% if service.type == "frontend" %}
 frontend {{ service.name }}
 {% for bind in service.binds %}
@@ -99,7 +127,7 @@ backend {{ service.name }}
   {{ option }}
 {% endfor %}
 {% for endpoint in service.endpoints | default([]) %}
-  server {{ endpoint.name }} {{ endpoint.address }} {{ endpoint.options | default() }}
+  server {{ endpoint.name }} {{ endpoint.address }} {{ endpoint.options | default(haproxy_default_endpoint_option) }}
 {% endfor %}
 
 {% endif %}

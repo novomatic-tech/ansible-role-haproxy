@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/novomatic-tech/ansible-role-haproxy.svg?branch=master)](https://travis-ci.org/novomatic-tech/ansible-role-haproxy) [![License](https://img.shields.io/badge/license-MIT%20License-brightgreen.svg)](https://opensource.org/licenses/MIT) [![Ansible Role Name](https://img.shields.io/ansible/role/23784.svg)](https://galaxy.ansible.com/novomatic-tech/haproxy/) [![Ansible Role counter](https://img.shields.io/ansible/role/d/23784.svg)](https://galaxy.ansible.com/novomatic-tech/haproxy/) 
+[![Build Status](https://travis-ci.org/novomatic-tech/ansible-role-haproxy.svg?branch=master)](https://travis-ci.org/novomatic-tech/ansible-role-haproxy) [![License](https://img.shields.io/badge/license-MIT%20License-brightgreen.svg)](https://opensource.org/licenses/MIT) [![Ansible Role Name](https://img.shields.io/ansible/role/23784.svg)](https://galaxy.ansible.com/novomatic-tech/haproxy/) [![Ansible Role counter](https://img.shields.io/ansible/role/d/23784.svg)](https://galaxy.ansible.com/novomatic-tech/haproxy/)
 
 
 Ansible-role-haproxy
@@ -23,6 +23,10 @@ Example playbook usage is also define in [vars/main.yml](vars/main.yml).
 
 **Note**: A variable `haproxy_stats_pass:` have to be change before you use this role.
 
+Limitations
+-----------
+ * listen section support only tcp mode.
+
 Example Playbook
 ----------------
 
@@ -40,6 +44,17 @@ Example playbook usage.
    #role configuration parameters.
    haproxy_max_conn: 2000000
    haproxy_services:
+     - name: "Kafka"
+       type: listen
+       binds:
+         - { host: "*", port: "8080" }
+       acls:
+         - { name: "network_allowed", rule: "src 20.30.40.50 8.9.9.0/27" }
+       conditions:
+         - { state: "tcp-request connection reject", rule: "!network_allowed" }
+       endpoints:
+         - { name: "backend_1", address: "192.168.0.1:8080" }
+         - { name: "backend_2", address: "192.168.0.2:8080" }
      - name: "k8s"
        type: frontend
        binds:
