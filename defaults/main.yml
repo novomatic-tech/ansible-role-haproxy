@@ -22,12 +22,12 @@ haproxy_ssl_enabled: False
 
 haproxy_accesslog_json: True
 haproxy_timeouts:
-  - { type: "http-request", value: "10s"  }
+  - { type: "http-request", value: "10s" }
   - { type: "queue", value: "30s" }
   - { type: "connect", value: "10s" }
   - { type: "client", value: "30s" }
   - { type: "server", value: "1m" }
-  - { type: "http-keep-alive", value: "10s"  }
+  - { type: "http-keep-alive", value: "10s" }
   - { type: "check", value: "5s" }
 
 # Stats settings
