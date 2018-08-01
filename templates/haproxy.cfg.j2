@@ -105,14 +105,14 @@ frontend {{ service.name }}
 {% endif %}
 {% endfor %}
   mode {{ service.mode | default(haproxy_default_frontend_mode) }}
+{% for option in service.options | default(haproxy_default_frontend_options) %}
+  {{ option }}
+{% endfor %}
 {% for acl in service.acls | default([]) %}
   acl {{ acl.name }} {{ acl.rule }}
 {% endfor %}
 {% for condition in service.conditions | default([]) %}
   {{ condition.state }} if {{ condition.rule }}
-{% endfor %}
-{% for option in service.options | default(haproxy_default_frontend_options) %}
-  {{ option }}
 {% endfor %}
 {% if service.default_backend is defined %}
   default_backend {{ service.default_backend }}
