@@ -14,6 +14,14 @@
     dest: /etc/systemd/system/haproxy.service
     mode: 0644
 
+- name: Allow Stats port when HAProxy Stats and SELinux are enable
+  seport:
+    ports: "{{ haproxy_stats_port }}"
+    proto: tcp
+    setype: http_port_t
+    state: present
+  when: ansible_selinux.status == 'enabled' and haproxy_stats_enabled
+
 - name: Create haproxy main configuration
   template:
     src: haproxy.cfg.j2
