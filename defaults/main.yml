@@ -41,6 +41,9 @@ haproxy_stats_port: 2000
 haproxy_stats_user: admin
 haproxy_stats_pass: PleaseChangeIt123
 
+#Selinux settings
+haproxy_selinux_connect_any: True
+
 haproxy_default_listen_balance: source
 haproxy_default_listen_mode: tcp
 haproxy_default_listen_options:
