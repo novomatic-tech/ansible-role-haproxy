@@ -4,5 +4,9 @@
   pre_tasks:
     - name: Include vars
       include_vars: vars.yml
+    - name: Install firewalld package
+      yum:
+        name: firewalld
+        state: present
   roles:
     - ansible-role-haproxy

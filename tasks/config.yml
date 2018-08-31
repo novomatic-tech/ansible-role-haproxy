@@ -29,6 +29,30 @@
     persistent: yes
   when: ansible_selinux.status == 'enabled'
 
+- name: Gather service facts from the host
+  service_facts:
+
+- name: Check if firewalld package is installed
+  yum:
+    list: firewalld
+  register: firewalld_package
+
+- name: Allow http traffic on firewalld
+  firewalld:
+    service: http
+    permanent: true
+    state: enabled
+  when: firewalld_package.results[1].yumstate == "installed"
+  notify: Reload firewalld
+
+- name: Allow Statistics ports on firewalld
+  firewalld:
+    port: "{{ haproxy_stats_port }}/tcp"
+    permanent: true
+    state: enabled
+  when: firewalld_package.results[1].yumstate == "installed"
+  notify: Reload firewalld
+
 - name: Create haproxy main configuration
   template:
     src: haproxy.cfg.j2

@@ -7,4 +7,12 @@
     state: "restarted"
     enabled: "yes"
   retries: 3
-  when: not ansible_check_mode
+  when: not ansible_check_mode and ansible_facts.services is defined
+
+- name: Reload firewalld
+  systemd:
+    name: "firewalld"
+    state: "reloaded"
+    enabled: "yes"
+  retries: 3
+  when: not ansible_check_mode and ansible_facts.services['firewalld.service'].state == 'running'
