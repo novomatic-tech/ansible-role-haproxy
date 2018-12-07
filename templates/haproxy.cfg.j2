@@ -79,6 +79,11 @@ listen {{ service.name }}
 {% endfor %}
   mode {{ service.mode | default(haproxy_default_listen_mode) }}
   balance {{ service.balance_type | default (haproxy_default_listen_balance)}}
+{% if service.haproxy_timeouts %}
+{% for timeout in service.haproxy_timeouts %}
+  timeout {{ timeout.type }}  {{ timeout.value }}
+{% endfor %}
+{% endif %}
 {% if ( haproxy_accesslog_json and haproxy_default_listen_mode == 'tcp' ) %}
   log-format {"type":"haproxy","timestamp":%Ts,"http_status":%ST,"remote_addr":"%ci","bytes_read":%B,"upstream_addr":"%si","backend_name":"%b","retries":%rc,"bytes_uploaded":%U,"upstream_connect_time":"%Tc","session_duration":"%Tt","termination_state":"%ts"}
 {% endif %}
