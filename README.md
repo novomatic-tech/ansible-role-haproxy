@@ -57,6 +57,8 @@ Example playbook usage.
        binds:
          - { host: "*", port: "80" }
        mode: http
+       haproxy_timeouts:
+         - { type: "client", value: "1m" }
        acls:
          - { name: "forward_k8s", rule: "hdr_end(host) -i k8s.example.com" }
        conditions:
