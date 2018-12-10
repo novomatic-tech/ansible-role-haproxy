@@ -79,7 +79,7 @@ listen {{ service.name }}
 {% endfor %}
   mode {{ service.mode | default(haproxy_default_listen_mode) }}
   balance {{ service.balance_type | default (haproxy_default_listen_balance)}}
-{% if service.haproxy_timeouts %}
+{% if service.haproxy_timeouts is defined %}
 {% for timeout in service.haproxy_timeouts %}
   timeout {{ timeout.type }}  {{ timeout.value }}
 {% endfor %}
