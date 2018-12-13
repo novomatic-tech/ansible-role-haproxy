@@ -56,6 +56,7 @@ Example playbook usage.
        type: frontend
        binds:
          - { host: "*", port: "80" }
+         - { host: "*", port: "443", priv_keys: ["domain_cert_with_key.pem", "domain2_cert_with_key.pem"] }
        mode: http
        haproxy_timeouts:
          - { type: "client", value: "1m" }

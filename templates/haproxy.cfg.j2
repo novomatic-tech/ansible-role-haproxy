@@ -71,8 +71,11 @@ listen stats
 {% if service.type == "listen" %}
 listen {{ service.name }}
 {% for bind in service.binds %}
-{% if ( bind.priv_key is defined and haproxy_default_listen_mode == 'http' ) %}
-  bind {{ bind.host }}:{{ bind.port }} ssl crt /etc/ssl/{{ bind.priv_key }}
+{% if ( bind.priv_keys is defined and haproxy_default_listen_mode == 'http' ) %}
+  bind {{ bind.host }}:{{ bind.port }} ssl crt {% for priv_key in bind.priv_keys %}
+{{ haproxy_ssl_certs_root_path}}/{{ priv_key }}{%- if not loop.last %} crt {% endif %}
+{% endfor %}
+
 {% else %}
   bind {{ bind.host }}:{{ bind.port }}
 {% endif %}
@@ -104,8 +107,11 @@ listen {{ service.name }}
 {% if service.type == "frontend" %}
 frontend {{ service.name }}
 {% for bind in service.binds %}
-{% if bind.priv_key is defined %}
-  bind {{ bind.host }}:{{ bind.port }} ssl crt /etc/ssl/{{ bind.priv_key }}
+{% if bind.priv_keys is defined %}
+  bind {{ bind.host }}:{{ bind.port }} ssl crt {% for priv_key in bind.priv_keys %}
+{{ haproxy_ssl_certs_root_path}}/{{ priv_key }}{%- if not loop.last %} crt {% endif %}
+{% endfor %}
+
 {% else %}
   bind {{ bind.host }}:{{ bind.port }}
 {% endif %}
