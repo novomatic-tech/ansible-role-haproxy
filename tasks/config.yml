@@ -42,7 +42,7 @@
     service: http
     permanent: true
     state: enabled
-  when: firewalld_package.results[1].yumstate == "installed"
+  when: firewalld_package|json_query("results[?name=='firewalld'].yumstate") == 'installed'
   notify: Reload firewalld
 
 - name: Allow Statistics ports on firewalld
@@ -50,7 +50,7 @@
     port: "{{ haproxy_stats_port }}/tcp"
     permanent: true
     state: enabled
-  when: firewalld_package.results[1].yumstate == "installed"
+  when: firewalld_package|json_query("results[?name=='firewalld'].yumstate") == 'installed'
   notify: Reload firewalld
 
 - name: Create haproxy main configuration

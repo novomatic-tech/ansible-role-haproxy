@@ -6,7 +6,9 @@
       include_vars: vars.yml
     - name: Install firewalld package
       yum:
-        name: firewalld
+        name: '{{ item }}'
         state: present
+      loop:
+        - firewalld
   roles:
     - ansible-role-haproxy
