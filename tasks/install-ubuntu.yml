@@ -1,0 +1,5 @@
+---
+- name: Install HAproxy Packages
+  package:
+    name: "haproxy"
+    state: "{{ haproxy_state }}"

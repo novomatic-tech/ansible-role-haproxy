@@ -8,12 +8,6 @@
     state: present
     reload: yes
 
-- name: Custom haproxy systemd units
-  template:
-    src: haproxy.service.j2
-    dest: /etc/systemd/system/haproxy.service
-    mode: 0644
-
 - name: Allow Stats port when HAProxy Stats and SELinux are enable
   seport:
     ports: "{{ haproxy_stats_port }}"
@@ -32,31 +26,6 @@
 - name: Gather service facts from the host
   service_facts:
 
-- name: Check if firewalld package is installed
-  yum:
-    list: firewalld
-  register: firewalld_package
-
-- name: Allow http traffic on firewalld
-  firewalld:
-    service: http
-    permanent: true
-    state: enabled
-  when: firewalld_package|json_query("results[?name=='firewalld'].yumstate") == 'installed'
-  notify: Reload firewalld
-
-- name: Allow Statistics ports on firewalld
-  firewalld:
-    port: "{{ haproxy_stats_port }}/tcp"
-    permanent: true
-    state: enabled
-  when: firewalld_package|json_query("results[?name=='firewalld'].yumstate") == 'installed'
-  notify: Reload firewalld
-
-- name: Create haproxy main configuration
-  template:
-    src: haproxy.cfg.j2
-    dest: /etc/haproxy/haproxy.cfg
-    mode: 0644
-    validate: haproxy -f %s -c -q
-  notify: Restart haproxy
+- name: Gather the package facts
+  package_facts:
+    manager: auto

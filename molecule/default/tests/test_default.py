@@ -1,7 +1,8 @@
 import pytest
+import os
 from testinfra.utils.ansible_runner import AnsibleRunner
-
-testinfra_hosts = AnsibleRunner('.molecule/ansible_inventory').get_hosts('all')
+testinfra_hosts = AnsibleRunner(
+                    os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
 
 
 @pytest.mark.parametrize("dirs", [
@@ -16,7 +17,6 @@ def test_directories(host, dirs):
 
 
 @pytest.mark.parametrize("files", [
-    "/etc/systemd/system/haproxy.service",
     "/etc/haproxy/haproxy.cfg"
 ])
 def test_files(host, files):

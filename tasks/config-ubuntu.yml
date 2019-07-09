@@ -1,0 +1,34 @@
+---
+
+- name: Modify ubunut systemd unitfile
+  lineinfile:
+    path: /lib/systemd/system/haproxy.service
+    regexp: '^LimitNOFILE='
+    insertafter: '^Type=notify$'
+    line: 'LimitNOFILE={{ haproxy_max_conn | int * 2 + 40 }}'
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Allow haproxy ports traffic on ufw
+  ufw:
+    port: "{{ item[1].port }}"
+    proto: tcp
+    rule: allow
+  when: '"ufw" in ansible_facts.packages and item[0].type in ["listen", "frontent"]'
+  loop: "{{ lookup('subelements', haproxy_services, 'binds', {'skip_missing': True}) }}"
+  notify: Reload ufw
+
+- name: Allow Statistics ports on ufw
+  ufw:
+    port: "{{ haproxy_stats_port }}"
+    proto: tcp
+    rule: allow
+  when: '"ufw" in ansible_facts.packages and haproxy_stats_enabled'
+  notify: Reload ufw
+
+- name: Create haproxy main configuration
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    mode: 0644
+    validate: haproxy -f %s -c -q
+  notify: Restart haproxy

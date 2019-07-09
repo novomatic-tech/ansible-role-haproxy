@@ -1,14 +1,19 @@
 [Unit]
 Description=HAProxy Load Balancer
+Documentation=man:haproxy(1)
 After=syslog.target network.target
 
 [Service]
 EnvironmentFile=/etc/sysconfig/haproxy
 RuntimeDirectory=haproxy
-ExecStart=/usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -p /run/haproxy.pid $OPTIONS
+ExecStartPre=/usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -c -q $OPTIONS
+ExecStart=/usr/sbin/haproxy -Ws -f /etc/haproxy/haproxy.cfg -p /run/haproxy.pid $OPTIONS
+ExecReload=/usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -c -q $OPTIONS
 ExecReload=/bin/kill -USR2 $MAINPID
 KillMode=mixed
-Type=forking
+Restart=always
+Type=notify
 LimitNOFILE={{ haproxy_max_conn | int * 2 + 40 }}
+
 [Install]
 WantedBy=multi-user.target

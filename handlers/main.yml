@@ -16,3 +16,11 @@
     enabled: "yes"
   retries: 3
   when: not ansible_check_mode and ansible_facts.services['firewalld.service'].state == 'running'
+
+- name: Reload ufw
+  systemd:
+    name: "ufw"
+    state: "reloaded"
+    enabled: "yes"
+  retries: 3
+  when: not ansible_check_mode and ansible_facts.services['ufw.service'].state == 'running'

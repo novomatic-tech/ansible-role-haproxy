@@ -6,6 +6,15 @@
     msg: "Please change password for HAProxy statistics page. Consider changing username if needed."
   when: haproxy_stats_pass == "PleaseChangeIt123"
 
-- include_tasks: install.yml
+- include_tasks: install-rhel.yml
+  when: ansible_os_family == 'RedHat'
 
+- include_tasks: install-ubuntu.yml
+  when: ansible_distribution == 'Ubuntu'
 - include_tasks: config.yml
+
+- include_tasks: config-rhel.yml
+  when: ansible_os_family == 'RedHat'
+
+- include_tasks: config-ubuntu.yml
+  when: ansible_distribution == 'Ubuntu'

@@ -2,7 +2,7 @@
 
 - name: Create HAproxy group
   group:
-    name: "{{ haproxy_group}}"
+    name: "{{ haproxy_group }}"
     system: yes
     state: present
 
@@ -18,7 +18,7 @@
 - name: Install HAproxy Packages > 1.8
   yum:
     name: "{{ haproxy_rpm }}"
-    state: present
+    state: "{{ haproxy_state }}"
 
 - name: Set folders and change owner and rights
   file:

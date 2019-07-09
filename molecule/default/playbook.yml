@@ -1,0 +1,28 @@
+---
+- hosts: centos7
+  any_errors_fatal: yes
+  pre_tasks:
+    - name: Include vars
+      include_vars: vars.yml
+    - name: Install firewalld package
+      yum:
+        name: '{{ item }}'
+        state: present
+      loop:
+        - firewalld
+  roles:
+    - ansible-role-haproxy
+
+- hosts: ubuntu18
+  any_errors_fatal: yes
+  pre_tasks:
+    - name: Include vars
+      include_vars: vars.yml
+    - name: Install ufw package
+      apt:
+        name: '{{ item }}'
+        state: present
+      loop:
+        - ufw
+  roles:
+    - ansible-role-haproxy

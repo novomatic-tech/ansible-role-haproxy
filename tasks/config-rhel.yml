@@ -1,0 +1,33 @@
+---
+
+- name: Custom haproxy systemd units
+  template:
+    src: haproxy.service.j2
+    dest: /etc/systemd/system/haproxy.service
+    mode: 0644
+  when: ansible_os_family == 'RedHat'
+
+- name: Allow haproxy ports traffic on firewalld
+  firewalld:
+    port: "{{ item[1].port }}/tcp"
+    permanent: true
+    state: enabled
+  when: '"firewalld" in ansible_facts.packages and item[0].type in ["listen", "frontent"]'
+  loop: "{{ lookup('subelements', haproxy_services, 'binds', {'skip_missing': True}) }}"
+  notify: Reload firewalld
+
+- name: Allow Statistics ports on firewalld
+  firewalld:
+    port: "{{ haproxy_stats_port }}/tcp"
+    permanent: true
+    state: enabled
+  when: '"firewalld" in ansible_facts.packages and haproxy_stats_enabled'
+  notify: Reload firewalld
+
+- name: Create haproxy main configuration
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    mode: 0644
+    validate: haproxy -f %s -c -q
+  notify: Restart haproxy
