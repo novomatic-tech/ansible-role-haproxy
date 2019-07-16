@@ -13,7 +13,7 @@
     permanent: true
     state: enabled
   when: '"firewalld" in ansible_facts.packages and item[0].type in ["listen", "frontent"]'
-  loop: "{{ lookup('subelements', haproxy_services, 'binds', {'skip_missing': True}) }}"
+  loop: "{{ lookup('subelements', haproxy_services, 'binds', {'skip_missing': True}, wantlist=True) }}"
   notify: Reload firewalld
 
 - name: Allow Statistics ports on firewalld

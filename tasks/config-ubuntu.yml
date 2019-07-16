@@ -14,7 +14,7 @@
     proto: tcp
     rule: allow
   when: '"ufw" in ansible_facts.packages and item[0].type in ["listen", "frontent"]'
-  loop: "{{ lookup('subelements', haproxy_services, 'binds', {'skip_missing': True}) }}"
+  loop: "{{ lookup('subelements', haproxy_services, 'binds', {'skip_missing': True}, wantlist=True) }}"
   notify: Reload ufw
 
 - name: Allow Statistics ports on ufw
