@@ -4,7 +4,7 @@
 Ansible-role-haproxy
 =========
 
-Installs HAProxy on RedHat/CentOS server.
+Installs HAProxy on RedHat/CentOS and Ubuntu server.
 
 **Note**: This roles use _community_ HAProxy package in version 1.8.
 
@@ -16,8 +16,7 @@ This role use custom community package of HAProxy 1.8.1-4, url is define in defa
 Role Variables
 --------------
 
-All default variables are predefined in [defaults/main.yml](defaults/main.yml).
-Example playbook usage is also define in [vars/main.yml](vars/main.yml).
+All default variables are predefined in [defaults/main.yml](https://github.com/novomatic-tech/ansible-role-haproxy/blob/master/defaults/main.yml).
 
 **Note**: An attribute `haproxy_nbproc` should be equal or lower than the number of cpu on haproxy machines.  
 
